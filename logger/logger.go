@@ -13,6 +13,8 @@ var (
 
 type bookstorelogger interface {
 	Printf(format string, v ...interface{})
+	Info(msg string, tags ...zap.Field)
+	Error(msg string, err error, tags ...zap.Field)
 }
 
 type logger struct {
