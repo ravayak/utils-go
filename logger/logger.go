@@ -20,6 +20,7 @@ const (
 
 type bookstorelogger interface {
 	Printf(format string, v ...interface{})
+	Print(v ...interface{})
 }
 
 type logger struct {
@@ -89,6 +90,11 @@ func (l logger) Printf(format string, v ...interface{}) {
 	} else {
 		Info(fmt.Sprintf(format, v...))
 	}
+}
+
+// Mysql Logger Implementation
+func (l logger) Print(v ...interface{}) {
+	Info(fmt.Sprintf("%v", v))
 }
 
 func GetLogger() bookstorelogger {
