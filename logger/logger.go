@@ -13,8 +13,6 @@ var (
 
 type bookstorelogger interface {
 	Printf(format string, v ...interface{})
-	Info(msg string, tags ...zap.Field)
-	Error(msg string, err error, tags ...zap.Field)
 }
 
 type logger struct {
@@ -60,12 +58,12 @@ func GetLogger() bookstorelogger {
 	return log
 }
 
-func (l logger) Info(msg string, tags ...zap.Field) {
+func Info(msg string, tags ...zap.Field) {
 	log.log.Info(msg, tags...)
 	log.log.Sync()
 }
 
-func (l logger) Error(msg string, err error, tags ...zap.Field) {
+func Error(msg string, err error, tags ...zap.Field) {
 	tags = append(tags, zap.NamedError("error", err))
 	log.log.Error(msg, tags...)
 	log.log.Sync()
