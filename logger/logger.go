@@ -3,6 +3,7 @@ package logger
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -12,9 +13,9 @@ var (
 	log logger
 )
 
-//...
 const (
-	envLogLevel = "LOG_LEVEL"
+	envLogLevel  = "LOG_LEVEL"
+	envLogOutput = "LOG_OUTPUT"
 )
 
 type bookstorelogger interface {
@@ -27,7 +28,7 @@ type logger struct {
 
 func init() {
 	logConfig := zap.Config{
-		OutputPaths: []string{"stdout"},
+		OutputPaths: []string{getOutput()},
 		Level:       zap.NewAtomicLevelAt(getLevel()),
 		Encoding:    "json",
 		EncoderConfig: zapcore.EncoderConfig{
@@ -46,10 +47,20 @@ func init() {
 	}
 }
 
-func getLevel() zapcore.Level {
-	fmt.Println("LogLevel is: ", os.Getenv(envLogLevel))
+func getOutput() string {
+	output := strings.ToLower(strings.TrimSpace(os.Getenv(envLogOutput)))
 
-	switch os.Getenv(envLogLevel) {
+	if output == "" {
+		return "stdout"
+	}
+
+	return output
+}
+
+func getLevel() zapcore.Level {
+	fmt.Println("LogLevel is: ", strings.ToLower(strings.TrimSpace(os.Getenv(envLogLevel))))
+
+	switch strings.ToLower(strings.TrimSpace(os.Getenv(envLogLevel))) {
 	case "debug":
 		return zap.DebugLevel
 
