@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"os"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -9,6 +10,10 @@ import (
 
 var (
 	log logger
+)
+
+const (
+	envLogLevel = "LOG_LEVEL"
 )
 
 type bookstorelogger interface {
@@ -22,7 +27,7 @@ type logger struct {
 func init() {
 	logConfig := zap.Config{
 		OutputPaths: []string{"stdout"},
-		Level:       zap.NewAtomicLevelAt(zap.InfoLevel),
+		Level:       zap.NewAtomicLevelAt(getLevel()),
 		Encoding:    "json",
 		EncoderConfig: zapcore.EncoderConfig{
 			LevelKey:     "level",
@@ -38,6 +43,26 @@ func init() {
 	if log.log, err = logConfig.Build(); err != nil {
 		panic(err)
 	}
+}
+
+func getLevel() zapcore.Level {
+	fmt.Println("LogLevel is: ", os.Getenv(envLogLevel))
+
+	switch os.Getenv(envLogLevel) {
+	case "debug":
+		return zap.DebugLevel
+
+	case "info":
+		return zap.InfoLevel
+
+	case "error":
+		return zap.ErrorLevel
+
+	default:
+		return zap.InfoLevel
+
+	}
+
 }
 
 // ElasticSearch Logger Implementation
