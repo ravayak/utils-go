@@ -12,6 +12,7 @@ var (
 	log logger
 )
 
+//...
 const (
 	envLogLevel = "LOG_LEVEL"
 )
