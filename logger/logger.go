@@ -48,9 +48,9 @@ func init() {
 
 func (l logger) Printf(format string, v ...interface{}) {
 	if len(v) == 0 {
-		l.Info(format)
+		Info(format)
 	} else {
-		l.Info(fmt.Sprintf(format, v...))
+		Info(fmt.Sprintf(format, v...))
 	}
 }
 
