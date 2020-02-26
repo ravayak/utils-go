@@ -41,11 +41,11 @@ func (e restError) Causes() []interface{} {
 	return e.causes
 }
 
-func NewRestError(message string, status int, err error, causes []interface{}) RestError {
+func NewRestError(message string, status int, err string, causes []interface{}) RestError {
 	return restError{
 		message: message,
 		status:  http.StatusBadRequest,
-		error:   err.Error(),
+		error:   err,
 		causes:  causes,
 	}
 }
