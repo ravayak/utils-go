@@ -3,14 +3,15 @@ package rest_errors
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
 type restError struct {
-	message string        `json:"message"`
-	status  int           `json:"code"`
-	error   string        `json:"error"`
-	causes  []interface{} `json:"causes"`
+	ErrMessage string        `json:"message"`
+	ErrStatus  int           `json:"code"`
+	ErrError   string        `json:"error"`
+	ErrCauses  []interface{} `json:"causes"`
 }
 
 type RestError interface {
@@ -20,21 +21,17 @@ type RestError interface {
 	Causes() []interface{}
 }
 
-// func (e restError) Error() string {
-// 	return fmt.Sprintf("message: %s - status: %d - error: %s - causes: [ %v ]",
-// 		e.message, e.status, e.error, e.causes)
-// }
-
 func (e restError) Error() string {
-	return e.error
+	return fmt.Sprintf("message: %s - status: %d - error: %s - causes: [ %v ]",
+		e.ErrMessage, e.ErrStatus, e.ErrError, e.ErrCauses)
 }
 
 func (e restError) Message() string {
-	return e.message
+	return e.ErrMessage
 }
 
 func (e restError) Status() int {
-	return e.status
+	return e.ErrStatus
 }
 
 func (e restError) NewError(msg string) error {
@@ -42,15 +39,15 @@ func (e restError) NewError(msg string) error {
 }
 
 func (e restError) Causes() []interface{} {
-	return e.causes
+	return e.ErrCauses
 }
 
 func NewRestError(message string, status int, err string, causes []interface{}) RestError {
 	return restError{
-		message: message,
-		status:  http.StatusBadRequest,
-		error:   err,
-		causes:  causes,
+		ErrMessage: message,
+		ErrStatus:  http.StatusBadRequest,
+		ErrError:   err,
+		ErrCauses:  causes,
 	}
 }
 
@@ -64,37 +61,37 @@ func NewRestErrorFromBytes(bytes []byte) (RestError, error) {
 
 func NewBadRequestError(message string, err error) RestError {
 	return restError{
-		message: message,
-		status:  http.StatusBadRequest,
-		error:   err.Error(),
+		ErrMessage: message,
+		ErrStatus:  http.StatusBadRequest,
+		ErrError:   err.Error(),
 	}
 }
 
 func NewNotFoundError(message string, err error) RestError {
 	return restError{
-		message: message,
-		status:  http.StatusNotFound,
-		error:   err.Error(),
+		ErrMessage: message,
+		ErrStatus:  http.StatusNotFound,
+		ErrError:   err.Error(),
 	}
 }
 
 func NewUnauthorizedError(message string, err error) RestError {
 	return restError{
-		message: message,
-		status:  http.StatusUnauthorized,
-		error:   err.Error(),
+		ErrMessage: message,
+		ErrStatus:  http.StatusUnauthorized,
+		ErrError:   err.Error(),
 	}
 }
 
 func NewInternalServerError(message string, err error) RestError {
 	result := restError{
-		message: message,
-		status:  http.StatusInternalServerError,
-		error:   err.Error(),
+		ErrMessage: message,
+		ErrStatus:  http.StatusInternalServerError,
+		ErrError:   err.Error(),
 	}
 
 	if err != nil {
-		result.causes = append(result.causes, err.Error())
+		result.ErrCauses = append(result.ErrCauses, err.Error())
 	}
 
 	return result

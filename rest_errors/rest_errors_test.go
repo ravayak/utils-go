@@ -8,6 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+//TODO: Complete errors test
+
+// Old test
 // func TestNewError(t *testing.T) {
 // 	error := errors.New("this is a message")
 // 	assert.NotNil(t, error)
@@ -19,7 +22,7 @@ func TestInternalRequestError(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.EqualValues(t, http.StatusInternalServerError, err.Status())
 	assert.EqualValues(t, "this is a message", err.Message())
-	assert.EqualValues(t, "database example error", err.Error())
+	assert.EqualValues(t, "message: this is a message - status: 500 - error: database example error - causes: [ [database example error] ]", err.Error())
 	assert.NotNil(t, err.Causes())
 	assert.EqualValues(t, 1, len(err.Causes()))
 	assert.EqualValues(t, "database example error", err.Causes()[0])
@@ -32,7 +35,7 @@ func TestNewBadRequestError(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.EqualValues(t, http.StatusBadRequest, err.Status())
 	assert.EqualValues(t, "this is a message", err.Message())
-	assert.EqualValues(t, "bad request error", err.Error())
+	assert.EqualValues(t, "message: this is a message - status: 400 - error: bad request error - causes: [ [] ]", err.Error())
 }
 
 func TestNewNotFoundError(t *testing.T) {
@@ -40,5 +43,5 @@ func TestNewNotFoundError(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.EqualValues(t, http.StatusNotFound, err.Status())
 	assert.EqualValues(t, "this is a message", err.Message())
-	assert.EqualValues(t, "Not found error", err.Error())
+	assert.EqualValues(t, "message: this is a message - status: 404 - error: Not found error - causes: [ [] ]", err.Error())
 }
