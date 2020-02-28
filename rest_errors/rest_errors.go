@@ -3,7 +3,6 @@ package rest_errors
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 )
 
@@ -21,9 +20,13 @@ type RestError interface {
 	Causes() []interface{}
 }
 
+// func (e restError) Error() string {
+// 	return fmt.Sprintf("message: %s - status: %d - error: %s - causes: [ %v ]",
+// 		e.message, e.status, e.error, e.causes)
+// }
+
 func (e restError) Error() string {
-	return fmt.Sprintf("message: %s - status: %d - error: %s - causes: [ %v ]",
-		e.message, e.status, e.error, e.causes)
+	return e.error
 }
 
 func (e restError) Message() string {
@@ -87,7 +90,7 @@ func NewInternalServerError(message string, err error) RestError {
 	result := restError{
 		message: message,
 		status:  http.StatusInternalServerError,
-		error:   "internal_server_error",
+		error:   err.Error(),
 	}
 
 	if err != nil {
