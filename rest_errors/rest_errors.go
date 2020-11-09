@@ -83,6 +83,14 @@ func NewUnauthorizedError(message string, err error) RestError {
 	}
 }
 
+func NewConflictError(message string, err error) RestError {
+	return restError{
+		ErrMessage: message,
+		ErrStatus:  http.StatusConflict,
+		ErrError:   err.Error(),
+	}
+}
+
 func NewInternalServerError(message string, err error) RestError {
 	result := restError{
 		ErrMessage: message,
